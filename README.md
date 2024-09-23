@@ -57,10 +57,10 @@ Your Excel file should contain:
 - A set of columns representing the coordinates of the corners of the rectangles.
 - Another set of columns representing the points.
 
-| ROI_X1 | ROI_Y1 | ROI_X2 | ROI_Y2 | Point_X | Point_Y |
-|--------|--------|--------|--------|---------|---------|
-|   10   |   20   |   50   |   70   |    15   |   25    |
-|   ...  |   ...  |   ...  |   ...  |   ...   |   ...   |
+| ROI_X1 | ROI_Y1 | ROI_X2 | ROI_Y2 | ROI_X3 | ROI_Y3 | ROI_X4 | ROI_Y4 | Point_X | Point_Y |
+|--------|--------|--------|--------|--------|--------|--------|--------|---------|---------|
+|   10   |   20   |   50   |   20   |   50   |   70   |   10   |   70   |    15   |   25    |
+|   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...   |   ...   |
 
 The script will extract these columns and calculate the minimum distance from each point to its corresponding rectangle.
 
@@ -69,7 +69,7 @@ The script will extract these columns and calculate the minimum distance from ea
 ### How It Works
 
 1. **ROI Selection**: The macro takes the selected rectangular ROIs within Fiji/ImageJ.
-2. **Corner Extraction**: It converts each ROI into the coordinates of its four corners (X1, Y1, X2, Y2).
+2. **Corner Extraction**: It converts each ROI into the coordinates of its four corners (X1, Y1, X2, Y2, X3, Y3, X4, Y4).
 3. **Output**: The corner coordinates are printed or exported for use in the Python script.
 
 To use the macro:
