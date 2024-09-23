@@ -51,17 +51,34 @@ The Python script follows this flow:
 2. **Calculate Euclidean Distance**: For each point, the script computes the Euclidean distance to the perimeter of each rectangle, then stores the minimum distance for each point.
 3. **Save Results**: The script saves the computed minimum distances to a new Excel file for further analysis.
 
-### Example Excel File Format
+**CSV File Structure**
 
-Your Excel file should contain:
-- A set of columns representing the coordinates of the corners of the rectangles.
-- Another set of columns representing the points.
+To run the Python script correctly, the input CSV files must follow specific structures for both the **Rectangle Corners** and the **Points Coordinates**.
 
-| ROI_X1 | ROI_Y1 | ROI_X2 | ROI_Y2 | ROI_X3 | ROI_Y3 | ROI_X4 | ROI_Y4 | Point_X | Point_Y |
-|--------|--------|--------|--------|--------|--------|--------|--------|---------|---------|
-|   10   |   20   |   50   |   20   |   50   |   70   |   10   |   70   |    15   |   25    |
-|   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...   |   ...   |
+**Rectangle Corners CSV Structure**
 
+The CSV file for rectangle corners should contain the following columns, where each row represents the coordinates of the four corners of a rectangle:
+
+| ROI_X1 | ROI_Y1 | ROI_X2 | ROI_Y2 | ROI_X3 | ROI_Y3 | ROI_X4 | ROI_Y4 |
+|--------|--------|--------|--------|--------|--------|--------|--------|
+|   10   |   20   |   50   |   20   |   50   |   70   |   10   |   70   |
+|   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |   ...  |
+
+**Points Coordinates CSV Structure**
+
+The CSV file for points coordinates should contain the following columns, where each row represents the X and Y coordinates of a point for which the distance to the rectangle perimeter will be calculated:
+
+| Point_X | Point_Y |
+|---------|---------|
+|    15   |    25   |
+|    ...  |    ...  |
+
+You can find examples here:
+
+- **Rectangle Corners CSV**: `RectangleCorner_Coordinates.csv`
+- **Points Coordinates CSV**: `Points_Coordinates.csv`
+
+Both CSV files should be placed in the same directory as the Python script for processing. You can use these as templates.
 The script will extract these columns and calculate the minimum distance from each point to its corresponding rectangle.
 
 ## Fiji Macro
