@@ -75,8 +75,8 @@ The CSV file for points coordinates should contain the following columns, where 
 
 You can find examples here:
 
-- **Rectangle Corners CSV**: `RectangleCorner_Coordinates.csv`
-- **Points Coordinates CSV**: `Points_Coordinates.csv`
+- **Rectangle Corners CSV**: [Rectangle Corners CSV](RectangleCorner_Coordinates.csv)
+- **Points Coordinates CSV**: [Points Coordinates CSV](Points_Coordinates.csv)
 
 Both CSV files should be placed in the same directory as the Python script for processing. You can use these as templates.
 The script will extract these columns and calculate the minimum distance from each point to its corresponding rectangle.
