@@ -21,7 +21,7 @@ This repository contains two main tools:
 
 This project aims to facilitate the extraction of coordinates from rectangular ROIs and compute the minimum distance between a set of points and the perimeter of the rectangular ROIs. The workflow is split between two components: a Python script and a Fiji macro.
 
-- **Python Script**: Reads Excel files containing the ROIs and point coordinates, calculates the minimum Euclidean distance from each point to the perimeter of the rectangles, and stores the results.
+- **Python Script**: Reads CSV files containing the ROIs and point coordinates, calculates the minimum Euclidean distance from each point to the perimeter of the rectangles, and outputs the results in a new CSV file.
 - **Fiji Macro**: Takes selected rectangular ROIs in ImageJ or Fiji and converts them into corner coordinates for further processing.
 
 ## Python Script
@@ -31,25 +31,28 @@ This project aims to facilitate the extraction of coordinates from rectangular R
 Ensure you have the following Python packages installed before running the script:
 
 ```bash
-pip install pandas numpy os
+pip install pandas numpy
 ```
 ### Usage
 
-1. Place your Excel file (with the necessary columns for rectangles and points) in the same directory as the script.
+1. Create two separate CSV files for the point and the rectangle corner coordinates (see examples). If using the Fiji macro, these are automatically generated for you.
 2. Run the script as follows:
 
 ```bash
 python distance-tools.py
 ```
-3. The script will output the minimum distances between the points and the rectangle perimeter in a new file.
+3. When prompted, select the required files containing the coordinates. A message will appear in the console stating which file you should select.
+4. Select a name and save location for the output file.
+5. The script will output the minimum distances between the points and the rectangle perimeter in a new CSV file, containing the point coordinates and the distance to the closest rectangle perimeter. If the point is inside a rectangle, distance is assumed as zero (0).
 
 ### How It Works
 
 The Python script follows this flow:
 
-1. **Read Input**: Uses Pandas to read an Excel file. It extracts columns containing the coordinates for the rectangular ROIs and the points.
-2. **Calculate Euclidean Distance**: For each point, the script computes the Euclidean distance to the perimeter of each rectangle, then stores the minimum distance for each point.
-3. **Save Results**: The script saves the computed minimum distances to a new Excel file for further analysis.
+1. **Read Input**: Uses Pandas to read an .csv file. It then extracts the coordinates for the rectangular ROIs and the points.
+2. **Check Location**: For each point, the script detects whether it is located inside any of the given rectangles. If so, it returns a distance value of zero (0).
+3. **Calculate Euclidean Distance**: For each point not inside a rectangle, the script computes the Euclidean distance to the perimeter of each rectangle, then stores the minimum distance for each point.
+4. **Save Results**: The script saves the computed minimum distances to a new CSV file for further analysis.
 
 **CSV File Structure**
 
@@ -80,6 +83,15 @@ You can find examples here:
 
 Both CSV files should be placed in the same directory as the Python script for processing. You can use these as templates.
 The script will extract these columns and calculate the minimum distance from each point to its corresponding rectangle.
+
+**Output CSV structure**
+
+The CSV file containing the calculated distances contains the coordinate of a given point followed by its distance to the nearest rectangle, as such:
+
+| Point_X | Point_Y | Distance |
+|---------|---------|----------|
+|    10   |    20   |   0.201  |
+|   ...   |   ...   |    ...   |
 
 ## Fiji Macro
 
