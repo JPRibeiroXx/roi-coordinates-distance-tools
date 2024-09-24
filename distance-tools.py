@@ -1,35 +1,35 @@
 # Library import
 import pandas as pd
-import os
+import tkinter
+from tkinter import filedialog
 
 # Find data
-path = []
-for root, dir, files in os.walk("C:"):
-    if "ARPC2_Spectrin_NND_Analysis.xlsx" in files: # looks for excel file
-        path = os.path.join(root, "ARPC2_Spectrin_NND_Analysis.xlsx")
-        
-if path == []:
-    raise Exception("File not found")
+tkinter.Tk().withdraw() # prevents an empty tkinter window from appearing
+print("Select the CSV file containing the coordinates of the set of points")
+point_filename = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
 
-# Read ARPC2 data
-arpc2 = pd.read_excel(io=path, header=2, usecols='ED,EE', nrows=41)
-# Read Spectrin data
-spectrin = pd.read_excel(io=path, header=2, usecols='EK:ER', nrows=25) # hardcoded because the function hates assymetrical tables
+print("Select the CSV file containing the coordinates of the ROI corners")
+rect_filename = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
+
+# Read point data
+points = pd.read_csv(point_filename)
+# Read rectangle data
+roi = pd.read_csv(rect_filename)
 
 # Conversion to array
-arpc2 = arpc2.to_numpy()
-spectrin = spectrin.to_numpy()
+points = points.to_numpy()
+roi = roi.to_numpy()
 
 # Definition of rectangle class for ease
 class rectangle:
-    def __init__(self, xtl, ytl, xtr, ytr, xbl, ybl, xbr, ybr):
-        self.top_left = [xtl, ytl]
-        self.top_right = [xtr, ytr]
-        self.bottom_left = [xbl, ybl]
-        self.bottom_right = [xbr, ybr]
+    def __init__(self, rect):
+        self.top_left = [rect[0], rect[1]]
+        self.top_right = [rect[2], rect[3]]
+        self.bottom_left = [rect[4], rect[5]]
+        self.bottom_right = [rect[6], rect[7]]
 
 # Distance to a line segment
-def dist(rect_1, rect_2, point): # x3,y3 is the point
+def dist(rect_1, rect_2, point): # rect_1 and rect_2 correspond to corners of a rectangle forming a line segment of its perimeter
     px = rect_2[0]-rect_1[0]
     py = rect_2[1]-rect_1[1]
 
@@ -54,17 +54,17 @@ def dist(rect_1, rect_2, point): # x3,y3 is the point
 
 # Array of rectangles
 rects = []
-for i in range(0, len(spectrin)):
-    rects.append(rectangle(spectrin[i][0], spectrin[i][1], spectrin[i][2], spectrin[i][3], spectrin[i][4], 
-                           spectrin[i][5], spectrin[i][6], spectrin[i][7]))
+for i in range(0, len(roi)):
+    rects.append(rectangle(roi[i]))
+    
 # Distance calculation
 distances = []
-for point in arpc2:
+for point in points:
     min_dist = 1E10
     for rect in rects:
-        if (rect.top_right[0]>=point[0]) & (point[0]>=rect.top_left[0]):
-            if (rect.top_left[1]>=point[1]) & (point[1]>=rect.bottom_left[1]):
-                min_dist = 0
+        if (rect.top_right[0]>=point[0]) & (point[0]>=rect.top_left[0]): # check if x coordinate is in bounds
+            if (rect.top_left[1]>=point[1]) & (point[1]>=rect.bottom_left[1]):  # check if y coordinate is in bounds
+                min_dist = 0 # if yes, distance is 0 as the point is inside the rectangle
                 continue
             else:
                 check = min(dist(rect.top_left, rect.top_right, point), dist(rect.top_right, rect.bottom_right, point), dist(rect.bottom_right, rect.bottom_left, point), dist(rect.bottom_left, rect.top_left, point))
@@ -78,7 +78,10 @@ for point in arpc2:
             min_dist = check
         else:
             continue
-    distances.append(min_dist)
+    distances.append([point[0], point[1], min_dist])
 
-for i in range(0, len(distances)):
-    print(distances[i])
+# File output
+output = pd.DataFrame(distances, columns = ['x', 'y', 'Distance'])
+print("Select save location and name for output CSV file")
+output_path = tkinter.filedialog.asksaveasfilename(filetypes=[("CSV files", "*.csv")])
+output.to_csv(output_path+'.csv', index = False)
